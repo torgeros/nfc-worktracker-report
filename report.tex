@@ -6,7 +6,9 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 
-\title{TODO PUT TITLE}
+\newcommand{\projectname}{NFC WorkTracker}
+
+\title{\projectname\\\Large{A novel approach to put-your-phone-down applications.}}
 \author{Torge Rosendahl}
 
 \begin{document}
@@ -22,14 +24,51 @@ This report was written as part of the McGill ECSE 542 --- Human-Computer Intera
 foo bar, foo, bar
 \end{IEEEkeywords}
 
-\section{Introduction}
-Testsentence \cite{b1, b2}
+\section{Motivation}
+For me as a person it has always been difficult to ``just put my phone down'' when I have to get stuff done. And that has not become easier with more social media platforms. It is a known problem, than especially Generation Z has trouble focusing on work [SOURCE], due to being used to regularly looking at their phone. More and more young people have difficulties to put their phone away from time to time. What often helped me in such a situation was to put my phone away, ideally in another room, to just not think about having to reach it. But especially the part of putting your phone in another room is often something that is easier said than done.
+
+Over the last years, many apps have arisen that offer motivation to \textit{not use your phone}. This is done either through a (soft) lockdown of the device, like with the \textit{OnePlus ZenMode}\footnote{\url{https://www.oneplus.com/global/blog/product/zen-mode-explained}} or the TODO EXAMPLE 2, or through some kind of gamification\footnote{In the example of \textit{Forest}, this includes planting virtual and real trees. Other apps, for example, let you compare yourself with friends.}, for example in \textit{Forest}\footnote{\url{https://www.forestapp.cc/}}. Another feature most of these apps have is the recording of hours where the app was active.
+
+For some people, these apps are able to provide a routine of starting their "session" in the app, then working on whatever they have to work on and finally stopping tracking in the app. For other people, however, it is difficult to develop this routine, because just looking at your phone before starting work might drag them into a notification or some social media app, effectively stopping them from starting to work rather than motivating them. Additionally, they might be waiting for a phone call or want to be able to get some specific kind of notifications. Traditional time-tracking-apps, however, often mute your device, or even completely lock it down for a user-defined period of time to prevent ``accidental'' usage.
+
+The act of putting the physical object [phone] down, however, can be much easier correlated with a productive time in the brain[SOURCE? or delete]. It also allows you to hear that important phone call you do not want to miss ring through your apartment.
+
+The {\projectname} combines the act of putting down your phone when you start working with the additional functionality of an app. This app will track the time, for which your phone did stay in touch with the surface you put it on. Having an app track you not only gives you an additional pinch of motivation to not touch your phone mid-work, it also allows additional features, like an automated recording of worked hours.
+
+\section{Application Concept}
+%NFC and stuff
+%setup process
+%guiding through buying an NFC "tag" (generally meaning sticker, card, or other)
+
+\section{First Mockup}
+%first impl
+%details abt the app
+%software stuff: nfc background processing, fact that activity has to be started and not service directly
+
+\section{Feedback Round}
+%user feedback, including screenshots, notes of them using it, sketch/sketched screenshot (w/ arrow circles etc)
+%evaluation of some sort
+%two users okay, three would be better (Vic, Jonas, maybe s/o from law)
+%three user makes it more clear what needs to be changed, what should be a setting and what is just a "this single user thing"
+
+\section{Final Design}
+%iteration implementation
+%changes made to adapt to what the user requested/requires/had struggles with
+%foremost: correlation between feedback and changes!
 
 \section{Conclusion}
+%basic important task: evaluate personal findings with this
 
+\subsection{Final Feedback}
+%get feedback for "final" design. reflect on that.
+%I give the imporved/working version with their feedback implemented and get their reacction.
+%Either: It is not perfectly usable. Or: There is more critique. Changes they did not know they need, or changes they requested but dont like now.
 
-%\section*{Acknowledgment}
-%leave this out as long as I don't have anyone specific to thank I guess...
+\subsection{Future Perspective}
+I will transfer this project into the hands of \textit{vastivety}\footnote{\textit{vastivety} is an organizational level under which a friend and I work on open source projects in our free time. \url{https://vastivety.github.io}.} and keep on developing it with a friend of mine. I think this app has potential to be used by a broader range of people, and I will use this platform to push towards bringing {\projectname} into the known android app stores.
+
+\section*{Acknowledgement}
+I would like to thank my testers that really supported the development process. Without your constructive feedback this project would not be where it is right now. I would also like to thank Professor Cooperstock for his input into the selection of this project, as well as pointing me in the right direction when it came to this report.
 
 %Note bib style from IEEE, see
 % https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf
