@@ -36,6 +36,7 @@ The act of putting the physical object [phone] down, however, can be much easier
 The {\projectname} combines the act of putting down your phone when you start working with the additional functionality of an app. This app will track the time, for which your phone did stay in touch with the surface you put it on. Having an app track you not only gives you an additional pinch of motivation to not touch your phone mid-work, it also allows additional features, like an automated recording of worked hours.
 
 \section{Application Concept}
+As the reader might have guessed by this point, the technology used for checking the presence of a \textit{surface} that the phone is laid upon is Near Field Communication (NFC). This requires a secondary device that acts as the surface, in this case provided by a passive NFC tag. Such tags come in the form of actual key tags, plastic cards or as simple stickers. For a general purpose application, stickers are the best choice. The sticker can be placed on the surface where the user wants to have their phone when working. NFC has a maximum communication range of 20 cm \cite{nfcsurvey}, which allows for sufficiently easy placement of the phone but guarantees connection loss when the phone is moved.
 %NFC and stuff
 %setup process
 %guiding through buying an NFC "tag" (generally meaning sticker, card, or other)
@@ -73,7 +74,8 @@ I would like to thank my testers that really supported the development process. 
 %Note bib style from IEEE, see
 % https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf
 
-\input{bibliography}
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,sources}
 
 \end{document}
 
