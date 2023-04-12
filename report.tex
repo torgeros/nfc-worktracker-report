@@ -36,15 +36,70 @@ The act of putting the physical object [phone] down, however, can be much easier
 The {\projectname} combines the act of putting down your phone when you start working with the additional functionality of an app. This app will track the time, for which your phone did stay in touch with the surface you put it on. Having an app track you not only gives you an additional pinch of motivation to not touch your phone mid-work, it also allows additional features, like an automated recording of worked hours.
 
 \section{Application Concept}
-As the reader might have guessed by this point, the technology used for checking the presence of a \textit{surface} that the phone is laid upon is Near Field Communication (NFC). This requires a secondary device that acts as the surface, in this case provided by a passive NFC tag. Such tags come in the form of actual key tags, plastic cards or as simple stickers. For a general purpose application, stickers are the best choice. The sticker can be placed on the surface where the user wants to have their phone when working. NFC has a maximum communication range of 20 cm \cite{nfcsurvey}, which allows for sufficiently easy placement of the phone but guarantees connection loss when the phone is moved.
+As the reader might have guessed by this point, the technology used for checking the presence of a \textit{surface} that the phone is laid upon is Near Field Communication (NFC). This requires a secondary device that acts as the surface, in this case provided by a passive NFC tag. Such tags come in the form of actual key tags, plastic cards or as simple stickers. For a general purpose application, stickers are the best choice. The sticker can be placed on the surface where the user wants to have their phone when working.
+
 %NFC and stuff
+NFC has a maximum communication range of 20 cm \cite{nfcsurvey}, which allows for sufficiently easy placement of the phone but guarantees connection loss when the phone is moved. NFC tags can hold any binary data, often stored on the tag as NDEF messages which can hold multiple records. These record can hold a multitude of different things, in my case there will be single message with one record that holds an application-defined MIME-type where the content is an ID the identifies the tag\footnote{Actually, the ID is currently neither unique, nor used. The app currently relies on the existence of this data record, which is enough to fulfill the specified use cases.}.
+
 %setup process
+The usage of the app itself is very intuitive. Just telling the user (through means that remain to be defined for now) that they can put their phone down onto an NFC tag to track their work hours gives them all the information they need to actively use the system. The NFC tag itself is thereby a valid signifier for where to place the phone, and most young people nowadays have used NFC before, for example for cardless payment.
+
+The important part this app needs to cover as well to become intuitively usable by everyone is providing the user with all essential information, as well as guiding them through the setup process. This setup process consists of buying an NFC tag (or multiple), chosing a place to put it for daily work and then registering it to work with the app.
 %guiding through buying an NFC "tag" (generally meaning sticker, card, or other)
+The user will, for the submitted project state, not be guided through the process of picking and purchasing an NFC tag, because any NFC tag works, as long as it is writable. NFC tags come in different shapes and sizes, most often they are found as stickers or in a credit card format. The remaining part of the setup and usage process is guided by the app itself.
+
+The setup process is by far less intuitive than the usage process, so I expected from the beginning that the setup process has the most potential for improvement.
 
 \section{First Mockup}
+\subsection{Implementation Details and Process}
 %first impl
+This section will explain the first implementation of the \projectname{}, which is intended to be a proof-of-concept and to be used for the feedback round. This first version of \projectname{} already supports all the required features. This includes tracking of work hours, setting up the application and corresponding NFC tags and viewing the tracking history. I will present these features in the order I implemented them in. This allows me to give some insight into my implementation process along with the presentation of the results.
+
+\subsubsection{Home Screen}
+%TODO include screenshot. refer to home screen elements (buttons) in later sections!
+
+\subsubsection{Active Tracking}
+The app has to support tracking the presence of an NFC tag in the background. While the user is of course not intended to use their phone during tracking, there is no way to prevent them from for example looking at a notification of setting up some other work-related things on their phone, like turning on Do Not Disturb. Therefore, within the environment of android, the tracking is implemented as a service. Android differentiatees between background and foreground services. The former are used for processing details in the background, but are not allowed to access interactive resources [SOURCE]. Therefore, \projectname{} uses a foreground services. This, aditionally to being able to access the NFC hardware, also allows the app to show a notification to the user confirming that tracking has successfully been started. This kind of confirmation is really helpful to build trust into the tracking functionality.
+
+Throughout the implementation, I stumbled upon a minor inconvenience: Android only allows NFC tags to open activities. An activity is something that is displayed to the user, like the main screen of basically any app. Therefore, we cannot start our tracking service directly from a tag. The workaround to overcome this solution is to ??? [CHECK]!!!!!!! might be that the constraint rather was that startForeground in the service only works from activities!
+
 %details abt the app
-%software stuff: nfc background processing, fact that activity has to be started and not service directly
+
+\subsubsection{History View}
+The next section I implemented was the history view. Through this, the user can see the past usage of the tracking functionality.
+
+The history itself is stored in an SQLite databse within the application, using androids Room abstraction layer[SOURCE]. This allows persistent storage between sessions and offers an intuitive way for the developer to access structured data through SQL queries.
+
+The home screen of \projectname{} has a button that launches an activity to display the history. This history-activity acts independently from the rest of the app. For example, showing the history does not interfere with a possible active work tracking process. The history view lists all past history entries. In the current (first) implementation, each entry is represented by it's start and end time which is displayed as a date/time combination in the user interface. Displayed times and dates are localized and work across different time zones. However, for privacy reasons, the timezone is not stored with the history entry, so if you move to a different time zone, the times in your history will appear shifted to your \textbf{new} time zone. From a design perspective, the app would even work if you were to move timezones during tracking.
+
+\subsubsection{Setup Process}
+When the base construct of the app was functional, I went on to do the setup process. This process is, like the history, started as a new activity on the press of a button on the home screen of the app.
+
+First, I drew some sketches on what I want the setup process to look like. It is a step-by-step intructions, so a series of consecutive screen makes sense. Only when the current step has been completed, either by the app or by the user, the setup process will display instructions for the next.
+%TODO show and explain sketches!
+
+Second, I implemented the sketches into android layout files and added the logic flow. Every screen from the sketches is represented by it's own fragment, which represent replacable sub-layouts in android activities. For activities that display fragments, android allows the specification of a navigation graph, to change fragments in a structured manner. A simplified version of that navigation graph is shown in \cref{fig:nav-graph}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\linewidth]{*}
+	\caption{Simplified version the setup-activity fragment navigation graph.}
+	\label{fig:nav-graph}
+\end{figure}
+
+Third: Functionality
+
+\subsection{Runtime Requirements}
+To use the app, a small amount of things are required:
+
+\begin{itemize}
+	\item Android phone, with
+	\subitem minimum Version 8.0 (Oreo)
+	\subitem NFC-capable hardware.
+	\item NFC tag, that is:
+	\subitem capable of communicating with phone (right NFC technology)
+	\subitem writable
+\end{itemize}
 
 \section{Feedback Round}
 %user feedback, including screenshots, notes of them using it, sketch/sketched screenshot (w/ arrow circles etc)
