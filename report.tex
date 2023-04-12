@@ -81,6 +81,7 @@ When the base construct of the app was functional, I went on to do the setup pro
 First, I drew some sketches on what I want the setup process to look like. It is a step-by-step intructions, so a series of consecutive screen makes sense. Only when the current step has been completed, either by the app or by the user, the setup process will display instructions for the next.
 %TODO show and explain sketches!
 %TODO explain all the fragments and their job.
+The introduction fragment (FIGREF) is there to prepare the phone for the upcoming setup process. It makes sure that the user has NFC turned on and instructs them on how to place the to-be-written NFC tag. The ``setup'' fragment instructs the user to place the phone on the tag in question (FIGREF) and then waits for that to happen. Then, the tag is written and the user is informed on the outcome, either success (FIGREF) or failure (FIGREF).
 
 Second, I implemented the sketches into android layout files and added the logic flow. Every screen from the sketches is represented by it's own fragment, which represent replacable sub-layouts in android activities. For activities that display fragments, android allows the specification of a navigation graph, to change fragments in a structured manner. A simplified version of that navigation graph is shown in \cref{fig:nav-graph}. At this point in the implementation, I added temprorary buttons to all the fragments that allow me to navigate along the defined actions, to be able to pretend all the read- and write-interaction with the tag.
 
