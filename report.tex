@@ -126,14 +126,28 @@ To use the app, a small amount of things are required:
 
 \section{Feedback Round}
 %user A: JAM, user B: VF
-To get an insight into what users think off this first state of the app, I sent out a first copy of the app to two friends. Both testers are students, which matches the discussed target user group.
+To get an insight into what users think off this first state of the app, I sent out a first copy of the app to two friends. Both testers are students, which matches the discussed target user group. For the purpose of this report we will call them \textit{user A} and \textit{user B}.
 %TODO can I put some info about the two's details?
 Both users were instructed to run through the setup process and use the app as far as possible. I created a test instruction document to get comparable results. This document also included a short survey at the end. The following section discusses the results that came up throughout testing.
 
 One thing that came up pretty quickly during testing is that NFC apparently is handled very differently across different android versions and OEMs. While on my testing device everything seemed to work, both users reported different issues with regard to the tracking. For user A, the tracking stopped every time the screen turned off. This is probably related to power saving measures taken by the phone's manufacturer. The other user reported that the tracking did not stop when the phone was lifted. In return, the tracking also did not stop when the was locked. Within the limited time of this project scope, I was unable to come up with a fix for that. There is however a potential solution that will be discussed later. For the sake of this report, I told both user to pretend the app works. User A disabled the automatic screen timeout for the time testing and user B was instructed to stop the tracking manually, through the button on the notification (see \cref{fig:notification}).
 
 \subsection{Post-Test Survey}
+Together with the testing instructions, the testers were sent a post-test questionnaire that they did then send back to me when they were done. A shortened version of this can be found in appendix \ref{app:questionnaire}. I have restructured the answers into sections.
 
+\subsubsection{General Functionality, Bugs and Problems}
+As mentioned above, both users had trouble using the app as intend for NFC-related reasons. Those were of course reported upon.
+
+One user reported that it was hard to find a tag to use. I made sure before testing that both users had a tag, but this will of course not be the case for every possible user. It might be required to include instructions for the purchase of (functioning) NFC tags in the app or it#s documentation. However, I don't like the idea of advertising a specific product or linking an online store that sells tags, not even just ``as an example''.
+
+Both users reported that while the testing instructions are certainly useful, the setup process is described well enough within the app that they supposedly would have been able to do it just using the app.
+
+\subsubsection{Branding, Design}
+One user reported that they were bothered by the fact that the app includes the word ``tracker'' in it's name, which certainly has a negative connotation. I already feared that this might be the case beforehand, but still chose the name because I could not come up with something significantly better. After all, ``work time tracking'' is the exact purpose of this app.
+
+Additionally, it was mentioned that the color scheme of the app is not perfect. I took that problem into consideration already, but did not implement it until after the testing was done. The latest version of the app does support Android's system-wide Material You design scheme. %TODO footnote and typo check
+
+\subsubsection{Feature Requests}
 
 \section{Design Iteration}
 %iteration implementation
@@ -201,7 +215,7 @@ The following is a close-to-original version of the post test questionnaire. I r
 }
 
 \surveyquestion{Do you have anything else to say?}{
-	The app's color scheme is a bit off (status bar colors, see screenshot).
+	The app's color scheme is a bit off.
 }{
 	--
 }
