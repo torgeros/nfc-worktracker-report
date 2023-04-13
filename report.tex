@@ -138,16 +138,25 @@ Together with the testing instructions, the testers were sent a post-test questi
 \subsubsection{General Functionality, Bugs and Problems}
 As mentioned above, both users had trouble using the app as intend for NFC-related reasons. Those were of course reported upon.
 
-One user reported that it was hard to find a tag to use. I made sure before testing that both users had a tag, but this will of course not be the case for every possible user. It might be required to include instructions for the purchase of (functioning) NFC tags in the app or it#s documentation. However, I don't like the idea of advertising a specific product or linking an online store that sells tags, not even just ``as an example''.
+One user reported that it was hard to find a tag to use. I made sure before testing that both users had a tag, but this will of course not be the case for every possible user. It might be required to include instructions for the purchase of (functioning) NFC tags in the app or it's documentation. However, I don't like the idea of advertising a specific product or linking an online store that sells tags, not even just ``as an example''.
 
 Both users reported that while the testing instructions are certainly useful, the setup process is described well enough within the app that they supposedly would have been able to do it just using the app.
+
+There was also a problem with the history view. A currently active session is at that point not yet stored in the database and therefore not represented in the history session list. This can be changed quite easily by requesting whether or not the tracking service is running when the history is rendered. Additionally, the history needs to be reloaded when a session tracking completes while the history is being displayed. Currently, the user has to close and re-open the history view to update it. Both issues with the history have been fixed between testing and submission of this project.
 
 \subsubsection{Branding, Design}
 One user reported that they were bothered by the fact that the app includes the word ``tracker'' in it's name, which certainly has a negative connotation. I already feared that this might be the case beforehand, but still chose the name because I could not come up with something significantly better. After all, ``work time tracking'' is the exact purpose of this app.
 
-Additionally, it was mentioned that the color scheme of the app is not perfect. I took that problem into consideration already, but did not implement it until after the testing was done. The latest version of the app does support Android's system-wide Material You design scheme. %TODO footnote and typo check
+Additionally, it was mentioned that the color scheme of the app is not perfect. I took that problem into consideration already, but did not implement it until after the testing was done. The latest version of the app does support Android's system-wide \textit{Dynamic Color}\footnote{\textit{Dynamic Colors} is also advertised as \textit{Material You}. \url{https://m3.material.io/styles/color/dynamic-color/overview}} design scheme.
 
 \subsubsection{Feature Requests}
+I specifically asked some questions that had the users think about potential new features. I proposed a new feature where you can take notes to document what you did in a tracked session and asked if and how they would use this. Both users agreed that this is a useful feature. However, both users disagreed with my original proposition on how to add these notes. I originally thought that it is sufficient to just have an editable note associated with each history entry, which can be edited through the history view. The testers wanted to have a more direct approach where they can enter the note during or immediately when stopping the session. No matter the final implementation, the history entry will get \textit{edit}-button to modify said note, which also gives the chance to implement a way to delete just a single history entry.
+
+Another suggested feature was to add more details to the history view. Additionally to the listed entries, it was requested that there be a total for the tracked time, as well as a statistic structured by weeks or months.
+
+A third feature I proposed was to have multiple tags for different things. This plays well with the first feature. A purpose-specific tag could be deployed by allowing a specific tag to set a default note on the created session object. This can be implemented in two ways: either through the tag ID\footnote{Remember, this ID is supposed to be unique per tag, even though it is not right now!} and a local mapping tag ID $\to$ comment or by saving the comment on the tag as a string. Both methods have their advantages and disadvantages, it needs some further discussion to figure out the preferred realization. I will postpone this to outside the  university project scope.
+
+Finally, one user requested a lockdown of the phone during tracking to force-stop them from using their phone. I will discuss a proposed solution for this in the next section.
 
 \section{Design Iteration}
 %iteration implementation
@@ -180,6 +189,7 @@ I would like to thank my testers that really supported the development process. 
 \bibliography{IEEEabrv,sources}
 
 \appendices
+
 \section{Post-Test Questionnaire Answers}
 \label{app:questionnaire}
 The following is a close-to-original version of the post test questionnaire. I removed a few questions that gave no additional insight and edited the other questions to give some context with regard to the removed parts. Grammatical or spelling errors in users' answers have been copied from their questionnaire.
