@@ -2,6 +2,7 @@
 
 % import custom packages
 \usepackage{amsmath,amssymb}
+\usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{cleveref}
@@ -13,6 +14,7 @@
 	\noindent User A: \textit{#2}\\
 	User B: \textit{#3}
 }
+\newcommand{\phonescreenwidth}{2.69in}
 
 \graphicspath{{images}}
 
@@ -48,7 +50,7 @@ As the reader might have guessed by this point, the technology used for checking
 
 \subsection{NFC Usage \& Specification}
 \label{sec:nfc-details}
-NFC has a maximum communication range of 20 cm \cite{nfcsurvey}, which allows for sufficiently easy placement of the phone but guarantees connection loss when the phone is moved. NFC tags can hold any binary data, often stored on the tag as NDEF\footnote{NFC Data Exchange Format} messages which can hold multiple records. These record can hold a multitude of different things, in my case there will be single message with one record that holds an application-defined MIME-type\footnote{Multipurpose Internet Mail Extensions (MIME) is used to specify the data format of a chunk of data, for example \textit{text/html} for websites.} where the content is an ID the identifies the tag\footnote{Actually, the ID is currently neither unique, nor used. The app currently relies on the existence of this data record, which is enough to fulfill the specified use cases.}. The data specified on a \projectname{} tag uses the type \textit{application/ca.mcgill.nfcworktracker.tag}, which contains the package name of the project and is therefore application-specific. The following data is the tag's ID,. represented as plain text.
+NFC has a maximum communication range of 20 cm \cite{nfcsurvey}, which allows for sufficiently easy placement of the phone but guarantees connection loss when the phone is moved. NFC tags can hold any binary data, often stored on the tag as NDEF\footnote{NFC Data Exchange Format} messages which can hold multiple records. These record can hold a multitude of different things, in my case there will be single message with one record that holds an application-defined MIME-type\footnote{Multipurpose Internet Mail Extensions (MIME) is used to specify the data format of a chunk of data, for example \textit{text/html} for websites.} where the content is an ID the identifies the tag\footnote{Actually, the ID is currently neither unique, nor used. The app currently relies on the existence of this data record, which is enough to fulfill the specified use cases.}. The data specified on a \projectname{} tag uses the type \textit{application/\linebreak{}ca.mcgill.nfcworktracker.tag}, which contains the package name of the project and is therefore application-specific. The following data is the tag's ID,. represented as plain text.
 %TODO before submit: check formatting of mime type -> force into one line
 
 \subsection{Application Features}
@@ -68,25 +70,30 @@ This section will explain the first implementation of the \projectname{}, which 
 The home screen is the landing page when the user starts the app. It has buttons to setup/create a new tag and to show the tracking history.
 
 \subsubsection{Active Tracking}
-The app has to support tracking the presence of an NFC tag in the background. While the user is of course not intended to use their phone during tracking, there is no way to prevent them from for example looking at a notification of setting up some other work-related things on their phone, like turning on Do Not Disturb. Therefore, within the environment of Android, the tracking is implemented as a service. Android differentiates between background and foreground services. The former are used for processing details in the background, but are not allowed to access interactive resources [SOURCE]. Therefore, \projectname{} uses a foreground services. This, additionally to being able to access the NFC hardware, also allows the app to show a notification to the user confirming that tracking has successfully been started. This kind of confirmation is really helpful to build trust into the tracking functionality.
-
-Throughout the implementation, I stumbled upon a minor inconvenience: Android only allows NFC tags to open activities. An activity is something that is displayed to the user, like the main screen of basically any app. Therefore, we cannot start our tracking service directly from a tag. The workaround to overcome this solution is to ??? [CHECK]!!!!!!! might be that the constraint rather was that startForeground in the service only works from activities!
-
-%TODO fix previous
-%TODO ref show screenshot of notificatin in text
-%TODO write about exact flow of put down -> notificatino -> until stop
+The app has to support tracking the presence of an NFC tag in the background. While the user is of course not intended to use their phone during tracking, there is no way to prevent them from for example looking at a notification of setting up some other work-related things on their phone, like turning on Do Not Disturb. Therefore, within the environment of Android, the tracking is implemented as a service. Android differentiates between background and foreground services. The former are used to process things in the background and are not visible to the user. \projectname{} should net it's users know when a session is being recorded and thus has to be ``noticable by the user''. A foreground service, additionally to being able to access the NFC hardware, also allows the app to show a notification to the user to confirm that tracking has successfully been started. This kind of confirmation is really helpful to build trust into the tracking functionality.
 
 \begin{figure}
 	\centering
-%	\includegraphics[width=\linewidth]{}
+	\includegraphics[width=\phonescreenwidth]{notification.png}
 	\caption{Screenshot of the ``tracking active''-notification. It is shown whenever the tracking service is currently running.}
 	\label{fig:notification}
 \end{figure}
 
+Throughout the implementation, I stumbled upon a minor inconvenience: Android does not allow NFC tags to start foreground services. Therefore, we cannot start our tracking service directly from a tag. The only way to start a foreground service is from another (foreground) activity. Activities in Android are the views of an app that are directly displayed to the user, for example the start screen of an app. Therefore, we have to start an empty activity from the tag and then launch the foreground tracking service from here. The activity is closed immediately after, most of the time the activity is not even displayed to the user because it closes before the open animation is done.
+
+The exact usage flow for this tracking functionality then is like this: First, the user puts down their phone on the tag. A notification pops up, letting them know that the tag has been detected, see \cref{fig:notification}. The user then goes on to do their work. When they are done a go to retrieve their phone, they have two means of stopping the session recording. Either, they just lift the phone. When the service is no longer able to access the tag it has been started with, it stops itself and saves the session to the system database. The other option is to open the navigation drawer, selecting the \projectname{} notification (\cref{fig:notification}) and click ``Stop Tracker''.
+
 When the user stops the tracking while the phone is still on the tag, the tag will from then on be ignored. The user has to lift the phone off the tag and put it back down to re-start the tracking.
 
 \subsubsection{History View}
-The next section I implemented was the history view. Through this, the user can see the past usage of the tracking functionality.
+The next section I implemented was the history view. Through this, the user can see the past usage of the tracking functionality. See an example of this in \cref{fig:history}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\phonescreenwidth]{screenshots/history_smaller.png}
+	\caption{The history view. Some empty screen in the middle was removed.}
+	\label{fig:history}
+\end{figure}
 
 The history itself is stored in an SQLite database within the application, using Android's Room abstraction layer[SOURCE]. This allows persistent storage between sessions and offers an intuitive way for the developer to access structured data through SQL queries.
 
@@ -98,9 +105,9 @@ In the application bar (the top bar with the back arrow), there is a three dot-m
 When the base construct of the app was functional, I went on to do the setup process. This process is, like the history, started as a new activity on the press of a button on the home screen of the app.
 
 First, I drew some sketches on what I want the setup process to look like. It is a step-by-step instructions, so a series of consecutive screen makes sense. Only when the current step has been completed, either by the app or by the user, the setup process will display instructions for the next.
-%TODO show and explain sketches!
-%TODO explain all the fragments and their job.
-The introduction fragment (FIGREF) is there to prepare the phone for the upcoming setup process. It makes sure that the user has NFC turned on and instructs them on how to place the to-be-written NFC tag. The ``setup'' fragment instructs the user to place the phone on the tag in question (FIGREF) and then waits for that to happen. Then, the tag is written and the user is informed on the outcome, either success (FIGREF) or failure (FIGREF).
+
+The sketches were done on paper and are not included in this report, but I will axplain the functionality I had laid out using screenshots from the actual implementation, which are printed in appendix \ref{sec:more-screenshots}.
+The introduction fragment (\cref{fig:setup-intro}) is there to prepare the phone for the upcoming setup process. It makes sure that the user has NFC turned on and instructs them on how to place the to-be-written NFC tag. The ``setup'' fragment instructs the user to place the phone on the tag in question (\cref{fig:setup-setup}) and then waits for that to happen. Then, the tag is written and the user is informed on the outcome, either success (\cref{fig:setup-success}) or failure (\cref{fig:setup-failure}).
 
 Second, I implemented the sketches into Android layout files and added the logic flow. Every screen from the sketches is represented by it's own fragment, which represent replaceable sub-layouts in Android activities. For activities that display fragments, Android allows the specification of a navigation graph, to change fragments in a structured manner. A simplified version of that navigation graph is shown in \cref{fig:nav-graph}. At this point in the implementation, I added temporary buttons to all the fragments that allow me to navigate along the defined actions, to be able to pretend all the read- and write-interaction with the tag.
 
@@ -126,8 +133,7 @@ To use the app, a small amount of things are required:
 
 \section{Feedback Round}
 %user A: JAM, user B: VF
-To get an insight into what users think off this first state of the app, I sent out a first copy of the app to two friends. Both testers are students, which matches the discussed target user group. For the purpose of this report we will call them \textit{user A} and \textit{user B}.
-%TODO can I put some info about the two's details?
+To get an insight into what users think off this first state of the app, I sent out a first copy of the app to two friends. Both testers are students, which matches the discussed target user group. For the purpose of this report we will call them \textit{user A} and \textit{user B}. User A has a somewhat technological background and some knowledge about the inner workings of android, while user B does not.
 Both users were instructed to run through the setup process and use the app as far as possible. I created a test instruction document to get comparable results. This document also included a short survey at the end. The following section discusses the results that came up throughout testing.
 
 One thing that came up pretty quickly during testing is that NFC apparently is handled very differently across different android versions and OEMs. While on my testing device everything seemed to work, both users reported different issues with regard to the tracking. For user A, the tracking stopped every time the screen turned off. This is probably related to power saving measures taken by the phone's manufacturer. The other user reported that the tracking did not stop when the phone was lifted. In return, the tracking also did not stop when the was locked. Within the limited time of this project scope, I was unable to come up with a fix for that. There is however a potential solution that will be discussed later. For the sake of this report, I told both user to pretend the app works. User A disabled the automatic screen timeout for the time testing and user B was instructed to stop the tracking manually, through the button on the notification (see \cref{fig:notification}).
@@ -164,7 +170,6 @@ Finally, one user requested a lockdown of the phone during tracking to force-sto
 %foremost: correlation between feedback and changes!
 First and foremost, it has to be noted that asking two users for feedback can not be considered an actual use-case study. I used the feedback round primarily to test the setup-process and the instructions on how the app can be used. From the returned results, it seems as if that was a success and the setup process is more or less good as it is.
 
-%TODO imporvements and fixes with regard to prev section
 \subsection{Changes based on feedback}
 The problem that user A reported, where they could not use the app with the screen turned off, is sadly not something I can fix easily. The constraint of disabling the NFC sensor when the screen is turned off is put onto the app by the android system. The only solution to this is to keep the screen turned on while tracking is active. A functionality like this, however, might light to the opposite of the intended use. By having the screen turned on, the user might actually drawn towards using the system, because it is easily accessible, since you do not even have to turn on the screen to use the phone.
 
@@ -242,6 +247,47 @@ The following is a close-to-original version of the post test questionnaire. I r
 }{
 	--
 }
+
+\newpage
+\section{Additional screenshots from the app}
+\label{sec:more-screenshots}
+
+The following pages hold some screenshots from the app. See also the history view, depicted in \cref{fig:history}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\phonescreenwidth]{screenshots/home.png}
+	\caption{The home screen of the \projectname{} app.}
+	\label{fig:home}
+\end{figure}
+
+\begin{figure*}
+	\centering
+	\begin{minipage}{\phonescreenwidth}
+		\includegraphics[width=\textwidth]{screenshots/s-intro.png}
+		\caption{The introduction screen of the setup process. This corresponds to the Intro-fragment.}
+		\label{fig:setup-intro}
+	\end{minipage}
+	\begin{minipage}{\phonescreenwidth}
+		\includegraphics[width=\textwidth]{screenshots/s-setup.png}
+		\caption{The setup screen of the setup process. This corresponds to the Setup-fragment.}
+		\label{fig:setup-setup}
+	\end{minipage}
+\end{figure*}
+
+\begin{figure*}
+\centering
+\begin{minipage}{\phonescreenwidth}
+	\includegraphics[width=\textwidth]{screenshots/s-success.png}
+		\caption{The write confirmation screen of the setup process. This corresponds to the Success-fragment.\\~}
+	\label{fig:setup-success}
+\end{minipage}
+\begin{minipage}{\phonescreenwidth}
+	\includegraphics[width=\textwidth]{screenshots/s-failure.png}
+		\caption{The failure screen of the setup process. This corresponds to the Failure-fragment. The error message (red text) is dynamically generated.}
+	\label{fig:setup-failure}
+\end{minipage}
+\end{figure*}
 
 \end{document}
 
