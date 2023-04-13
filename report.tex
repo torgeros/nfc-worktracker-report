@@ -136,13 +136,13 @@ One thing that came up pretty quickly during testing is that NFC apparently is h
 Together with the testing instructions, the testers were sent a post-test questionnaire that they did then send back to me when they were done. A shortened version of this can be found in appendix \ref{app:questionnaire}. I have restructured the answers into sections.
 
 \subsubsection{General Functionality, Bugs and Problems}
-As mentioned above, both users had trouble using the app as intend for NFC-related reasons. Those were of course reported upon.
+As mentioned above, both users had trouble using the app as intend for NFC-related reasons. Those were of course reported upon. Not being able to just put the phone down onto a tag because the recording stops early, like user A reported, is definitely a large issue that needs to be addressed as soon as possible.
 
 One user reported that it was hard to find a tag to use. I made sure before testing that both users had a tag, but this will of course not be the case for every possible user. It might be required to include instructions for the purchase of (functioning) NFC tags in the app or it's documentation. However, I don't like the idea of advertising a specific product or linking an online store that sells tags, not even just ``as an example''.
 
 Both users reported that while the testing instructions are certainly useful, the setup process is described well enough within the app that they supposedly would have been able to do it just using the app.
 
-There was also a problem with the history view. A currently active session is at that point not yet stored in the database and therefore not represented in the history session list. This can be changed quite easily by requesting whether or not the tracking service is running when the history is rendered. Additionally, the history needs to be reloaded when a session tracking completes while the history is being displayed. Currently, the user has to close and re-open the history view to update it. Both issues with the history have been fixed between testing and submission of this project.
+There was also a problem with the history view. A currently active session is at that point not yet stored in the database and therefore not represented in the history session list. This can be changed quite easily by checking whether or not the tracking service is running when the history is rendered. Additionally, the history needs to be reloaded when a session tracking completes while the history is being displayed. Currently, the user has to close and re-open the history view to update it. Both issues with the history have been fixed between testing and submission of this project.
 
 \subsubsection{Branding, Design}
 One user reported that they were bothered by the fact that the app includes the word ``tracker'' in it's name, which certainly has a negative connotation. I already feared that this might be the case beforehand, but still chose the name because I could not come up with something significantly better. After all, ``work time tracking'' is the exact purpose of this app.
@@ -162,11 +162,24 @@ Finally, one user requested a lockdown of the phone during tracking to force-sto
 %iteration implementation
 %changes made to adapt to what the user requested/requires/had struggles with
 %foremost: correlation between feedback and changes!
-%TODO this is just a test study
-%TODO app has to be brought into pulishable state
-%TODO then a bigger study can analyze actual usage and usefulness
-%TODO I would like to a comparative study of with vs without
-%TODO Then, based on that, new cimplementations can be made
+First and foremost, it has to be noted that asking two users for feedback can not be considered an actual use-case study. I used the feedback round primarily to test the setup-process and the instructions on how the app can be used. From the returned results, it seems as if that was a success and the setup process is more or less good as it is.
+
+%TODO imporvements and fixes with regard to prev section
+\subsection{Changes based on feedback}
+The problem that user A reported, where they could not use the app with the screen turned off, is sadly not something I can fix easily. The constraint of disabling the NFC sensor when the screen is turned off is put onto the app by the android system. The only solution to this is to keep the screen turned on while tracking is active. A functionality like this, however, might light to the opposite of the intended use. By having the screen turned on, the user might actually drawn towards using the system, because it is easily accessible, since you do not even have to turn on the screen to use the phone.
+
+This can be avoided by implementing the soft-lock functionality that one user requested. The app, when tracking starts, could open a black screen (to save as much power as possible) and, while being in the foreground, prevent the screen from being turned off automatically.
+However, this implementation will also require some additional evaluation with regard to battery usage. Having the phone unlocked permanently will definitely increase power draw.
+
+There might additional alternatives to explore, too. In theory, it is enough to start the timer and lock the phone when the tag is detected for the first time. Then, when the phone is unlocked by the user and the tag is still there, tracking can continue. When the user turns on the screen and the tag is no longer there, tracking is stopped. While this does not guarantee presence of the NFC tag during tracking, it is sufficient to be sure that the phone was not used in the mean time.
+
+Then, there were the suggested and requested additional features that can be added to the application. Before I consider publishing this app in a scope greater than the current university project, I would like to have most of these implemented. The option of taking notes to a session has been greatly appreciated by both testers. The first implementation for this will just include the chance to add a note to a session from the history view, but the other suggestion will definitely be explored, too. I like the idea of showing a popup to take notes on the current session as soon as it ends. The user is picking up their phone at this exact instance in timew, anyways. However, for users that do not want to take notes on their sessions, this popup will annpy them pretty quickly. I think it makes sense to run a study on this specific feature and the way other users (from a bigger test group) interact with it.
+
+\subsection{Follow-Up Use Case Study}
+Finally, I would like to run a bigger use case study, in which I can test the way in which users apply the concepts of this app into their everyday life. By running a bigger study, I might even be able to get measurable results in productivity increase or users' happiness in comparison to not using the app. This study, however, requires a larger user group to average out specific personalities when it comes to phone-usage during working hours. The suggested group size would need to be of at least 10, which is too big to run as a study in this project. Once the app is in a publishable state and all the problems described previously are fixed, it would be interesting to run this follow-up study to actually measure the app's effects. This new test run will also give the option to test other features, like the note-taking popup that was mentioned before.
+
+\subsection{Setup Process Design}
+With regard to the visual design feedback I got from my test users, I implemented a more cinsistent color scheme to make the app more visually appealing. However, I personally do not like the setup instructions the way they are right now. I see how the texts are helpful and necessary for accessibility, but I would additionally like to add some kind of visual guide, as well. For example, I would like to have an image that depicts the process of putting down the phone onto the tag. In the last screen that depicts that the write was a success, a green tick could be displayed to make it immediately understandable that the write was a success. All in all, I think this kind of visual aid would make the process more fun and easy to do for not as technically adversed users.
 
 \section{Conclusion}
 %basic important task: evaluate personal findings with this
