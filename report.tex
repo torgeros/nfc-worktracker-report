@@ -59,10 +59,10 @@ The setup process is by far less intuitive than the usage process, so I expected
 This section will explain the first implementation of the \projectname{}, which is intended to be a proof-of-concept and to be used for the feedback round. This first version of \projectname{} already supports all the required features. This includes tracking of work hours, setting up the application and corresponding NFC tags and viewing the tracking history. I will present these features in the order I implemented them in. This allows me to give some insight into my implementation process along with the presentation of the results.
 
 \subsubsection{Home Screen}
-%TODO include screenshot. refer to home screen elements (buttons) in later sections!
+The home screen is the landing page when the user starts the app. It has buttons to setup/create a new tag and to show the tracking history.
 
 \subsubsection{Active Tracking}
-The app has to support tracking the presence of an NFC tag in the background. While the user is of course not intended to use their phone during tracking, there is no way to prevent them from for example looking at a notification of setting up some other work-related things on their phone, like turning on Do Not Disturb. Therefore, within the environment of android, the tracking is implemented as a service. Android differentiatees between background and foreground services. The former are used for processing details in the background, but are not allowed to access interactive resources [SOURCE]. Therefore, \projectname{} uses a foreground services. This, aditionally to being able to access the NFC hardware, also allows the app to show a notification to the user confirming that tracking has successfully been started. This kind of confirmation is really helpful to build trust into the tracking functionality.
+The app has to support tracking the presence of an NFC tag in the background. While the user is of course not intended to use their phone during tracking, there is no way to prevent them from for example looking at a notification of setting up some other work-related things on their phone, like turning on Do Not Disturb. Therefore, within the environment of android, the tracking is implemented as a service. Android differentiates between background and foreground services. The former are used for processing details in the background, but are not allowed to access interactive resources [SOURCE]. Therefore, \projectname{} uses a foreground services. This, additionally to being able to access the NFC hardware, also allows the app to show a notification to the user confirming that tracking has successfully been started. This kind of confirmation is really helpful to build trust into the tracking functionality.
 
 Throughout the implementation, I stumbled upon a minor inconvenience: Android only allows NFC tags to open activities. An activity is something that is displayed to the user, like the main screen of basically any app. Therefore, we cannot start our tracking service directly from a tag. The workaround to overcome this solution is to ??? [CHECK]!!!!!!! might be that the constraint rather was that startForeground in the service only works from activities!
 
@@ -71,23 +71,23 @@ Throughout the implementation, I stumbled upon a minor inconvenience: Android on
 \subsubsection{History View}
 The next section I implemented was the history view. Through this, the user can see the past usage of the tracking functionality.
 
-The history itself is stored in an SQLite databse within the application, using androids Room abstraction layer[SOURCE]. This allows persistent storage between sessions and offers an intuitive way for the developer to access structured data through SQL queries.
+The history itself is stored in an SQLite database within the application, using androids Room abstraction layer[SOURCE]. This allows persistent storage between sessions and offers an intuitive way for the developer to access structured data through SQL queries.
 
 The home screen of \projectname{} has a button that launches an activity to display the history. This history-activity acts independently from the rest of the app. For example, showing the history does not interfere with a possible active work tracking process. The history view lists all past history entries. In the current (first) implementation, each entry is represented by it's start and end time which is displayed as a date/time combination in the user interface. Displayed times and dates are localized and work across different time zones. However, for privacy reasons, the timezone is not stored with the history entry, so if you move to a different time zone, the times in your history will appear shifted to your \textbf{new} time zone. From a design perspective, the app would even work if you were to move timezones during tracking.
 
 \subsubsection{Setup Process}
 When the base construct of the app was functional, I went on to do the setup process. This process is, like the history, started as a new activity on the press of a button on the home screen of the app.
 
-First, I drew some sketches on what I want the setup process to look like. It is a step-by-step intructions, so a series of consecutive screen makes sense. Only when the current step has been completed, either by the app or by the user, the setup process will display instructions for the next.
+First, I drew some sketches on what I want the setup process to look like. It is a step-by-step instructions, so a series of consecutive screen makes sense. Only when the current step has been completed, either by the app or by the user, the setup process will display instructions for the next.
 %TODO show and explain sketches!
 %TODO explain all the fragments and their job.
 The introduction fragment (FIGREF) is there to prepare the phone for the upcoming setup process. It makes sure that the user has NFC turned on and instructs them on how to place the to-be-written NFC tag. The ``setup'' fragment instructs the user to place the phone on the tag in question (FIGREF) and then waits for that to happen. Then, the tag is written and the user is informed on the outcome, either success (FIGREF) or failure (FIGREF).
 
-Second, I implemented the sketches into android layout files and added the logic flow. Every screen from the sketches is represented by it's own fragment, which represent replacable sub-layouts in android activities. For activities that display fragments, android allows the specification of a navigation graph, to change fragments in a structured manner. A simplified version of that navigation graph is shown in \cref{fig:nav-graph}. At this point in the implementation, I added temprorary buttons to all the fragments that allow me to navigate along the defined actions, to be able to pretend all the read- and write-interaction with the tag.
+Second, I implemented the sketches into android layout files and added the logic flow. Every screen from the sketches is represented by it's own fragment, which represent replaceable sub-layouts in android activities. For activities that display fragments, android allows the specification of a navigation graph, to change fragments in a structured manner. A simplified version of that navigation graph is shown in \cref{fig:nav-graph}. At this point in the implementation, I added temporary buttons to all the fragments that allow me to navigate along the defined actions, to be able to pretend all the read- and write-interaction with the tag.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=\linewidth]{TODO ADD GRAPHIC}
+%	\includegraphics[width=\linewidth]{}
 	\caption{Simplified version the setup-activity fragment navigation graph.}
 	\label{fig:nav-graph}
 \end{figure}
