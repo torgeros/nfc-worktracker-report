@@ -19,19 +19,19 @@
 \graphicspath{{images}}
 
 \title{\projectname\\\Large{A novel approach to put-your-phone-down applications.}}
-\author{Torge Rosendahl}
+\author{Torge Rosendahl\\\today}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-foo bar
+More and more people are having difficulties to focus on their work because they experience distraction coming from their phone, even just by it's presence. With this report, I present a novel approach for a work tracking application. \projectname{} motivates the user to leave their phone out of reach when working. This is done by tracking the presence of an application-specific NFC tag in reach of the phone. The app records the times in which the phone is positioned on this tag. The report describes the functionality of the application, the development process, some necessary implementation details and goes into detail on the feedback some test users provided. This project can be seen as a pilot study on the effects such an application can have and lays the foundation for broader research into the effects of motivating users towards not just \textit{not using} their phones, but actually putting them away.
 \\
 This report was written as part of the McGill ECSE 542 --- Human-Computer Interaction course.
 \end{abstract}
 
 \begin{IEEEkeywords}
-foo bar, foo, bar
+HCI, UCD, Android, NFC, Productivity, Digital Wellbeing, Work Tracker
 \end{IEEEkeywords}
 
 \section{Motivation}
@@ -41,9 +41,9 @@ Over the last years, many apps have arisen that offer motivation not to use your
 
 For some people, these apps are able to provide a routine of starting their ``session'' in the app, then working on whatever they have to work on and finally stopping tracking in the app. For other people, however, it is difficult to develop this routine, because just looking at your phone before starting work might drag them into a notification or some social media app, effectively stopping them from starting to work rather than motivating them. Additionally, they might be waiting for a phone call or want to be able to get some specific kind of notifications. Traditional time-tracking-apps, however, often mute your device, or even completely lock it down for a user-defined period of time to prevent accidental usage.
 
-The act of putting the physical object ``phone'' down, however, can be much easier correlated with productive time in the brain \cite{hbr-smartphone-nearby}. It also allows you to hear that important phone call you do not want to miss ring through your home.
+The act of putting the physical object ``phone'' down, however, can be much easier correlated with productive time in the brain. Placing the phone out of reach, ideally in another room, increases the ability to focus significantly \cite{hbr-smartphone-nearby}. And, this also allows you to still hear that important phone call you did not want to miss, because the phone is not locked down and you can hear it ring from wherever it is.
 
-The {\projectname} combines the act of putting down your phone when you start working with the additional functionality of an app. This app will track the time your phone did stay in touch with the surface you put it on. An app that tracks you not only gives you an additional pinch of motivation to not touch your phone mid-work, it also allows additional features, like an automatically stored record of worked hours.
+The {\projectname} combines the act of putting down your phone when you start working with the additional functionality of a work tracking application. The presented app will track the time your phone did stay in touch with the surface you put it on. An app that tracks you not only gives you an additional pinch of motivation to not touch your phone mid-work, it also allows additional features, like an automatically stored record of worked hours.
 
 \section{Application Concept}
 As the reader might have guessed by this point, the technology used for checking the presence of a \textit{surface} that the phone is laid upon is Near Field Communication (NFC). This requires a secondary device that acts as the surface, in this case provided by a passive NFC tag. Such tags come in the form of actual key tags, plastic cards or as simple stickers. For a general purpose application, stickers are the best choice. The sticker can be placed on the surface where the user wants to have their phone when working.
@@ -160,7 +160,7 @@ I specifically asked some questions that had the users think about potential new
 
 Another suggested feature was to add more details to the history view. Additionally to the listed entries, it was requested that there be a total for the tracked time, as well as a statistic structured by weeks or months.
 
-A third feature I proposed was to have multiple tags for different things. This plays well with the first feature. A purpose-specific tag could be deployed by allowing a specific tag to set a default note on the created session object. This can be implemented in two ways: either through the tag ID\footnote{Remember, this ID is supposed to be unique per tag, even though it is not right now!} and a local mapping from the tag ID to the default comment or by saving the comment directly on the tag as a string. Both methods have their advantages and disadvantages, it needs some further discussion to figure out the preferred realization. I will postpone this to outside the  university project scope.
+A third feature I proposed was to have multiple tags for different things. This plays well with the first feature. A purpose-specific tag could be deployed by allowing a specific tag to set a default note on the created session object. This can be implemented in two ways: either through the tag ID\footnote{Remember, this ID is supposed to be unique per tag, even though it is not right now!} and a local mapping from the tag ID to the default comment or by saving the comment directly on the tag as a string. Both methods have their advantages and disadvantages, it needs some further discussion to figure out the preferred realization.
 
 Finally, one user requested a lockdown of the phone during tracking to force-stop them from using their phone. I will discuss a proposed solution for this in the next section.
 
@@ -171,34 +171,34 @@ Finally, one user requested a lockdown of the phone during tracking to force-sto
 First and foremost, it has to be noted that asking two users for feedback can not be considered an actual use-case study. I used the feedback round primarily to test the setup-process and the instructions on how the app can be used. From the returned results, it seems as if that was a success and the setup process is more or less good as it is.
 
 \subsection{Changes based on feedback}
-The problem that user A reported, where they could not use the app with the screen turned off, is sadly not something I can fix easily. The constraint of disabling the NFC sensor when the screen is turned off is put onto the app by the android system. The only solution to this is to keep the screen turned on while tracking is active. A functionality like this, however, might light to the opposite of the intended use. By having the screen turned on, the user might actually drawn towards using the system, because it is easily accessible, since you do not even have to turn on the screen to use the phone.
+The problem that user A reported, where they could not use the app with the screen turned off, is sadly not something I can fix easily. The constraint of disabling the NFC sensor when the screen is turned off is put onto the app by the Android system. The only solution to this is to keep the screen turned on while tracking is active. A functionality like this, however, might light to the opposite of the intended use. By having the screen turned on, the user might actually drawn towards using the system, because it is easily accessible, since you do not even have to turn on the screen to use the phone.
 
 This can be avoided by implementing the soft-lock functionality that one user requested. The app, when tracking starts, could open a black screen (to save as much power as possible) and, while being in the foreground, prevent the screen from being turned off automatically.
 However, this implementation will also require some additional evaluation with regard to battery usage. Having the phone unlocked permanently will definitely increase power draw.
 
 There might additional alternatives to explore, too. In theory, it is enough to start the timer and lock the phone when the tag is detected for the first time. Then, when the phone is unlocked by the user and the tag is still there, tracking can continue. When the user turns on the screen and the tag is no longer there, tracking is stopped. While this does not guarantee presence of the NFC tag during tracking, it is sufficient to be sure that the phone was not used in the mean time.
 
-Then, there were the suggested and requested additional features that can be added to the application. Before I consider publishing this app in a scope greater than the current university project, I would like to have most of these implemented. The option of taking notes to a session has been greatly appreciated by both testers. The first implementation for this will just include the chance to add a note to a session from the history view, but the other suggestion will definitely be explored, too. I like the idea of showing a popup to take notes on the current session as soon as it ends. The user is picking up their phone at this exact instance in timew, anyways. However, for users that do not want to take notes on their sessions, this popup will annpy them pretty quickly. I think it makes sense to run a study on this specific feature and the way other users (from a bigger test group) interact with it.
+Then, there were the suggested and requested additional features that can be added to the application. The option of taking notes to a session has been greatly appreciated by both testers. The first implementation for this will just include the chance to add a note to a session from the history view, but the other suggestion will definitely be explored, too. I like the idea of showing a pop-up window to take notes on the current session as soon as it ends. The user is picking up their phone at this exact instance in time anyways. However, for users that do not want to take notes on their sessions, this pop-up will annoy them pretty quickly. I think it makes sense to run a study on this specific feature and the way other users (from a bigger test group) interact with it.
 
 \subsection{Follow-Up Use Case Study}
-Finally, I would like to run a bigger use case study, in which I can test the way in which users apply the concepts of this app into their everyday life. By running a bigger study, I might even be able to get measurable results in productivity increase or users' happiness in comparison to not using the app. This study, however, requires a larger user group to average out specific personalities when it comes to phone-usage during working hours. The suggested group size would need to be of at least 10, which is too big to run as a study in this project. Once the app is in a publishable state and all the problems described previously are fixed, it would be interesting to run this follow-up study to actually measure the app's effects. This new test run will also give the option to test other features, like the note-taking popup that was mentioned before.
+Finally, I would like to run a bigger use case study, in which I can test the way in which users apply the concepts of this app into their everyday life. By running a bigger study, I might even be able to get measurable results in productivity increase or users' happiness in comparison to not using the app. This study, however, requires a larger user group to average out specific personalities when it comes to phone-usage during working hours. The suggested group size would need to be of at least ten, which is too big to run as a study in this project. Once the app is in a publishable state and all the problems described previously are fixed, it would be interesting to run this follow-up study to actually measure the app's effects. This new test run will also give the option to test other features, like the note-taking pop-up that was mentioned before.
 
 \subsection{Setup Process Design}
-With regard to the visual design feedback I got from my test users, I implemented a more cinsistent color scheme to make the app more visually appealing. However, I personally do not like the setup instructions the way they are right now. I see how the texts are helpful and necessary for accessibility, but I would additionally like to add some kind of visual guide, as well. For example, I would like to have an image that depicts the process of putting down the phone onto the tag. In the last screen that depicts that the write was a success, a green tick could be displayed to make it immediately understandable that the write was a success. All in all, I think this kind of visual aid would make the process more fun and easy to do for not as technically adversed users.
+With regard to the visual design feedback I got from my test users, I implemented a more consistent color scheme to make the app more visually appealing. However, the setup instructions as they are right now look very improvised. While the text boxes holding the instructions are helpful and also necessary for accessibility, I would like to add some kind of visual guide, as well. For example, I would like to have an image that depicts the process of putting down the phone onto the tag. In the last screen that depicts that the write was a success, a green tick could be displayed to make it immediately understandable that the write was a success. All in all, I think this kind of visual aid would make the process more fun and easy to apply for less technologically experienced users.
 
 \section{Conclusion}
 %basic important task: evaluate personal findings with this
+In this project, I developed an Android application that allows recording of work time hours based on the physical location of the phone. This incentivizes users to leave their phone in another room when they are working, leading to a more productive working environment with one less distraction.
 
-\subsection{Final Feedback}
-%get feedback for "final" design. reflect on that.
-%I give the imporved/working version with their feedback implemented and get their reacction.
-%Either: It is not perfectly usable. Or: There is more critique. Changes they did not know they need, or changes they requested but dont like now.
+Doing this project was a great experience and allowed me to get deeper in touch with Human Computer Interaction and User Centered Design. Furthermore, I learned a lot about NFC and the way in which users physically interact with their phone.
 
-\subsection{Future Perspective}
-I will transfer this project into the hands of \textit{vastivety}\footnote{\textit{vastivety} is an organizational level under which a friend and I work on open source projects in our free time. \url{https://vastivety.github.io}.} and keep on developing it with a friend of mine. I think this app has potential to be used by a broader range of people, and I will use this platform to push towards bringing {\projectname} into the known Android app stores.
+The sources of the \projectname{}-App are available at \url{https://github.com/torgeros/nfc-worktracker}. Additionally, the \LaTeX-sources of this report are provided at \url{https://github.com/torgeros/nfc-worktracker-report}. This also includes the image files of all the figures in this report.
+
+\subsection*{Future Perspective}
+I will transfer this project into the hands of \textit{vastivety}\footnote{\textit{vastivety} is an organizational level under which a friend and I work on open source projects in our free time. \url{https://vastivety.github.io}.} and keep on developing it with a friend of mine. I think this app has potential to be used by a broader range of people, and I will use this platform to push towards bringing {\projectname} into the Android app stores.
 
 \section*{Acknowledgement}
-I would like to thank my testers who really supported the development process. Without your constructive feedback this project would not be where it is right now. I would also like to thank Professor Cooperstock for his input into the selection of this project, as well as pointing me in the right direction when it came to this report.
+I would like to thank my testers who really supported the development process. Without your constructive feedback this project would not be where it is right now. I would also like to thank Professor Cooperstock for his input into the selection of this project, as well as pointing me into the right direction when it came to this report.
 
 %Note bib style from IEEE, see
 % https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf
@@ -252,7 +252,7 @@ The following is a close-to-original version of the post test questionnaire. I r
 \section{Additional screenshots from the app}
 \label{sec:more-screenshots}
 
-The following pages hold some screenshots from the app. See also the history view, depicted in \cref{fig:history}
+The following pages hold some screenshots from the app. See also the history view, depicted in \cref{fig:history}.
 
 \begin{figure}[h!]
 	\centering
